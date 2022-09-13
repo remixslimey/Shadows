@@ -1,9 +1,8 @@
+from ast import Break
+from dis import findlinestarts
+from multiprocessing.resource_sharer import stop
 import pygame
 from pygame.locals import *
-
-
-clock = pygame.time.Clock()
-fps = 60
 
 pygame.init()
 
@@ -52,12 +51,10 @@ class Player():
             dx += 5
 
         #add gravity
-        self.vel_y += 1.8
+        self.vel_y += 1.5
         if self.vel_y > 2:
-            self.vel_y = 13
+            self.vel_y = 10
         dy += self.vel_y
-
-            
 
         #check for collision
         for tile in world.tile_list:
@@ -85,7 +82,6 @@ class Player():
 
         #draw player onto screen
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 class World():
     def __init__(self, data):
@@ -113,13 +109,13 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+                col_count += 1
+            row_count += 1
 
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
-            pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
 
-            
 world_data = [
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
@@ -128,7 +124,7 @@ world_data = [
 [1, 1, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
 [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 1], 
 [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
-[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1], 
+[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
 [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 1], 
 [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1], 
 [1, 1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], 
@@ -139,8 +135,6 @@ world_data = [
 
 player = Player(100, screen_height - 130)
 
-blob_group = pygame.sprite.Group()
-
 world = World(world_data)
 
 run = True
@@ -150,7 +144,6 @@ while run:
     screen.blit(sun_img, (100, 100))
 
     world.draw()
-
 
     player.update()
 
